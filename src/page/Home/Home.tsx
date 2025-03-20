@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import getData, { Idata } from '../../apiData/apiData';
+import Search from '../../components/Search/Search';
 
 export interface IAction {
   type: string;
@@ -36,6 +37,18 @@ function reducer(
       filteredState: newState,
     };
   }
+
+  if (action.type === 'searchChange') {
+    const newState = state.originalState.filter((elem) =>
+      elem.name.official.includes(action.value || '')
+    );
+
+    return {
+      originalState: state.originalState,
+      filteredState: newState,
+    };
+  }
+
   throw new Error(`Unhandled action type: ${action.type}`);
 }
 
@@ -79,11 +92,18 @@ const Home = () => {
     <table>
       <thead>
         <tr className="text-center bg-black">
-          <td className="border-1 border-sky-600 w-1/3 p-2">Name</td>
+          <td className="border-1 border-sky-600 w-1/3 p-2">
+            Name
+            <Search className="inline-block ml-2" dispatch={dispatch} />
+          </td>
           <td className="border-1 border-sky-600 w-1/3 p-2">Population</td>
           <td className="border-1 border-sky-600 w-1/3 p-2">
             Region
-            <Dropdown state={state?.originalState || []} dispatch={dispatch} />
+            <Dropdown
+              className="inline-block ml-2"
+              state={state?.originalState || []}
+              dispatch={dispatch}
+            />
           </td>
           <td className="border-1 border-sky-600 p-2">Flag</td>
         </tr>

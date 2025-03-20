@@ -3,9 +3,10 @@ import { Idata } from '../../apiData/apiData';
 import { IAction } from '../../page/Home/Home';
 
 const Dropdown: FC<{
+  className?: string;
   state: Idata[];
   dispatch: React.ActionDispatch<[action: IAction]>;
-}> = ({ state, dispatch }) => {
+}> = ({ state, dispatch, className }) => {
   const [...regions] = new Set(state.map((elem) => elem.region));
 
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -13,7 +14,7 @@ const Dropdown: FC<{
   };
 
   return (
-    <div className="inline-block ml-2">
+    <div className={className}>
       <select
         onChange={handleSelectedOption}
         className="text-black bg-white"
