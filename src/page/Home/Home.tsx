@@ -1,41 +1,95 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
+import Dropdown from '../../components/Dropdown/Dropdown';
+import getData, { Idata } from '../../apiData/apiData';
 
-interface Idata {
-  name: {
-    official: string;
-  };
-  population: number;
-  region: string;
-  flags: {
-    png: string;
-    alt: string;
-  };
+export interface IAction {
+  type: string;
+  payload?: Idata[];
+  value?: string;
 }
+
+function reducer(
+  state: { originalState: Idata[]; filteredState: Idata[] },
+  action: IAction
+): { originalState: Idata[]; filteredState: Idata[] } {
+  if (action.type === 'initialState') {
+    return {
+      originalState: action.payload ?? [],
+      filteredState: action.payload ?? [],
+    };
+  }
+
+  if (action.type === 'regionsChange') {
+    if (action.value === 'defaultValue') {
+      return {
+        originalState: state.originalState,
+        filteredState: state.originalState,
+      };
+    }
+
+    const newState = state.originalState.filter(
+      (elem) => elem.region === action.value
+    );
+
+    return {
+      originalState: state.originalState,
+      filteredState: newState,
+    };
+  }
+  throw new Error(`Unhandled action type: ${action.type}`);
+}
+
 const Home = () => {
-  const [data, setData] = useState<Idata[]>([]);
+  const [state, dispatch] = useReducer(reducer, {
+    originalState: [
+      {
+        name: {
+          official: '',
+        },
+        population: 0,
+        region: '',
+        flags: {
+          png: 'png',
+          alt: '',
+        },
+      },
+    ],
+    filteredState: [
+      {
+        name: {
+          official: '',
+        },
+        population: 0,
+        region: '',
+        flags: {
+          png: 'png',
+          alt: '',
+        },
+      },
+    ],
+  });
 
   useEffect(() => {
-    getData();
+    (async function () {
+      dispatch({ type: 'initialState', payload: await getData() });
+    })();
   }, []);
-
-  const getData = async () => {
-    const response = await fetch('https://restcountries.com/v3.1/all');
-    const data: Idata[] = await response.json();
-    setData(data);
-    console.log(data);
-  };
 
   return (
     <table>
-      <thead></thead>
-      <tbody>
+      <thead>
         <tr className="text-center bg-black">
           <td className="border-1 border-sky-600 w-1/3 p-2">Name</td>
           <td className="border-1 border-sky-600 w-1/3 p-2">Population</td>
-          <td className="border-1 border-sky-600 w-1/3 p-2">Region</td>
+          <td className="border-1 border-sky-600 w-1/3 p-2">
+            Region
+            <Dropdown state={state?.originalState || []} dispatch={dispatch} />
+          </td>
           <td className="border-1 border-sky-600 p-2">Flag</td>
         </tr>
-        {data.map((elem, index) => (
+      </thead>
+      <tbody>
+        {state?.filteredState.map((elem, index) => (
           <tr key={index}>
             <td className="text-left border-1 border-sky-600 p-2">
               {elem.name.official}
