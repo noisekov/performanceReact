@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import getData, { Idata } from '../../apiData/apiData';
 import Search from '../../components/Search/Search';
@@ -48,6 +48,16 @@ function reducer(
     );
   });
 
+  if (action.type === 'sort') {
+    if (action.value === 'asc') {
+      newState.sort((a, b) => b.population - a.population);
+    }
+
+    if (action.value === 'desc') {
+      newState.sort((a, b) => a.population - b.population);
+    }
+  }
+
   return {
     originalState: state.originalState,
     filteredState: newState,
@@ -90,6 +100,12 @@ const Home = () => {
     })();
   }, []);
 
+  const sortHandler = () => {
+    setArrow(!arrow);
+    dispatch({ type: 'sort', value: arrow ? 'desc' : 'asc' });
+  };
+  const [arrow, setArrow] = useState(false);
+
   return (
     <table>
       <thead>
@@ -98,7 +114,14 @@ const Home = () => {
             Name
             <Search className="inline-block ml-2" dispatch={dispatch} />
           </td>
-          <td className="border-1 border-sky-600 w-1/3 p-2">Population</td>
+          <td className="border-1 border-sky-600 w-1/3 p-2">
+            <span className="cursor-pointer" onClick={sortHandler}>
+              Population
+              <span className={'inline-block ' + (arrow ? '' : 'rotate-180')}>
+                🔼
+              </span>
+            </span>
+          </td>
           <td className="border-1 border-sky-600 w-1/3 p-2">
             Region
             <Dropdown
