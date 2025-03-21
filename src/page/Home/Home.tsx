@@ -8,7 +8,7 @@ export interface IAction {
   payload?: Idata[];
   value?: string;
 }
-const chandedState = { sortName: '', sortRegion: '' };
+const chandedState = { filterName: '', filterRegion: '', sort: '' };
 
 function reducer(
   state: { originalState: Idata[]; filteredState: Idata[] },
@@ -22,41 +22,53 @@ function reducer(
   }
 
   if (action.type === 'name') {
-    chandedState.sortName = action.value?.toLowerCase() || '';
+    chandedState.filterName = action.value?.toLowerCase() || '';
   }
 
   if (action.type === 'region') {
-    chandedState.sortRegion = action.value?.toLowerCase() || '';
+    chandedState.filterRegion = action.value?.toLowerCase() || '';
   }
 
   const newState = state.originalState.filter((elem) => {
-    if (chandedState.sortName && !chandedState.sortRegion) {
-      return elem.name.official.toLowerCase().includes(chandedState.sortName);
+    if (chandedState.filterName && !chandedState.filterRegion) {
+      return elem.name.official.toLowerCase().includes(chandedState.filterName);
     }
 
-    if (!chandedState.sortName && chandedState.sortRegion) {
-      return elem.region.toLowerCase() === chandedState.sortRegion;
+    if (!chandedState.filterName && chandedState.filterRegion) {
+      return elem.region.toLowerCase() === chandedState.filterRegion;
     }
 
-    if (!chandedState.sortName && !chandedState.sortRegion) {
+    if (!chandedState.filterName && !chandedState.filterRegion) {
       return true;
     }
 
     return (
-      elem.region.toLowerCase() === chandedState.sortRegion &&
-      elem.name.official.toLowerCase().includes(chandedState.sortName)
+      elem.region.toLowerCase() === chandedState.filterRegion &&
+      elem.name.official.toLowerCase().includes(chandedState.filterName)
     );
   });
 
   if (action.type === 'sort') {
     if (action.value === 'asc') {
-      newState.sort((a, b) => b.population - a.population);
+      chandedState.sort = 'asc';
     }
 
     if (action.value === 'desc') {
-      newState.sort((a, b) => a.population - b.population);
+      chandedState.sort = 'desc';
     }
   }
+
+  newState.sort((a, b) => {
+    if (chandedState.sort === 'desc') {
+      return a.population - b.population;
+    }
+
+    if (chandedState.sort === 'asc') {
+      return b.population - a.population;
+    }
+
+    return 0;
+  });
 
   return {
     originalState: state.originalState,
