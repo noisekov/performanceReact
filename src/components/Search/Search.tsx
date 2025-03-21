@@ -16,7 +16,7 @@ const Search: FC<{
 
   const handleSearch = debounce(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      dispatch({ type: 'searchChange', value: event.target.value });
+      dispatch({ type: 'name', value: event.target.value });
     },
     500
   );

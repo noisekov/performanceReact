@@ -8,6 +8,7 @@ export interface IAction {
   payload?: Idata[];
   value?: string;
 }
+const chandedState = { sortName: '', sortRegion: '' };
 
 function reducer(
   state: { originalState: Idata[]; filteredState: Idata[] },
@@ -20,36 +21,37 @@ function reducer(
     };
   }
 
-  if (action.type === 'regionsChange') {
-    if (action.value === 'defaultValue') {
-      return {
-        originalState: state.originalState,
-        filteredState: state.originalState,
-      };
+  if (action.type === 'name') {
+    chandedState.sortName = action.value?.toLowerCase() || '';
+  }
+
+  if (action.type === 'region') {
+    chandedState.sortRegion = action.value?.toLowerCase() || '';
+  }
+
+  const newState = state.originalState.filter((elem) => {
+    if (chandedState.sortName && !chandedState.sortRegion) {
+      return elem.name.official.toLowerCase().includes(chandedState.sortName);
     }
 
-    const newState = state.originalState.filter(
-      (elem) => elem.region === action.value
+    if (!chandedState.sortName && chandedState.sortRegion) {
+      return elem.region.toLowerCase() === chandedState.sortRegion;
+    }
+
+    if (!chandedState.sortName && !chandedState.sortRegion) {
+      return true;
+    }
+
+    return (
+      elem.region.toLowerCase() === chandedState.sortRegion &&
+      elem.name.official.toLowerCase().includes(chandedState.sortName)
     );
+  });
 
-    return {
-      originalState: state.originalState,
-      filteredState: newState,
-    };
-  }
-
-  if (action.type === 'searchChange') {
-    const newState = state.originalState.filter((elem) =>
-      elem.name.official.includes(action.value || '')
-    );
-
-    return {
-      originalState: state.originalState,
-      filteredState: newState,
-    };
-  }
-
-  throw new Error(`Unhandled action type: ${action.type}`);
+  return {
+    originalState: state.originalState,
+    filteredState: newState,
+  };
 }
 
 const Home = () => {

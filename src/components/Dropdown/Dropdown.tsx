@@ -10,7 +10,7 @@ const Dropdown: FC<{
   const [...regions] = new Set(state.map((elem) => elem.region));
 
   const handleSelectedOption = (event: ChangeEvent<HTMLSelectElement>) => {
-    dispatch({ type: 'regionsChange', value: event.target.value });
+    dispatch({ type: 'region', value: event.target.value });
   };
 
   return (
@@ -21,7 +21,7 @@ const Dropdown: FC<{
         name="region"
         id="region"
       >
-        <option value="defaultValue">select region</option>
+        <option value="">select region</option>
         {regions.map((region, index) => (
           <option key={index} value={region}>
             {region}
