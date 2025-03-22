@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState } from 'react';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import getData, { Idata } from '../../apiData/apiData';
 import Search from '../../components/Search/Search';
+import Country from '../../components/Country/Country';
 
 export interface IAction {
   type: string;
@@ -148,23 +149,7 @@ const Home = () => {
       <tbody>
         {state?.filteredState.map((elem, index) => (
           <tr key={index}>
-            <td className="text-left border-1 border-sky-600 p-2">
-              {elem.name.official}
-            </td>
-            <td className="text-center border-1 border-sky-600 p-2">
-              {elem.population}
-            </td>
-            <td className="text-center border-1 border-sky-600 p-2">
-              {elem.region}
-            </td>
-            <td className="text-center border-1 border-sky-600 p-2">
-              <img
-                src={elem.flags.png}
-                alt={elem.flags.alt}
-                width="100%"
-                height="100%"
-              />
-            </td>
+            <Country elem={elem} />
           </tr>
         ))}
       </tbody>
