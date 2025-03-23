@@ -59,13 +59,13 @@ function reducer(
     }
   }
 
-  newState.sort((a, b) => {
+  newState.sort((prev, current) => {
     if (chandedState.sort === 'desc') {
-      return a.population - b.population;
+      return prev.population - current.population;
     }
 
     if (chandedState.sort === 'asc') {
-      return b.population - a.population;
+      return current.population - prev.population;
     }
 
     return 0;
