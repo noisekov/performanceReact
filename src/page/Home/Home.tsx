@@ -119,6 +119,19 @@ const Home = () => {
   };
   const [arrow, setArrow] = useState(false);
 
+  const handleVisited = (event: React.MouseEvent, element: string) => {
+    const target = event.target as HTMLElement;
+    target.parentElement?.classList.add('brightness-50');
+    const countryListVisited = JSON.parse(
+      localStorage.getItem('countryListRS') || `[]`
+    );
+    countryListVisited.push(element);
+    localStorage.setItem(
+      'countryListRS',
+      JSON.stringify([...new Set(countryListVisited)])
+    );
+  };
+
   return (
     <table>
       <thead>
@@ -148,7 +161,18 @@ const Home = () => {
       </thead>
       <tbody>
         {state?.filteredState.map((elem, index) => (
-          <tr key={index}>
+          <tr
+            key={index}
+            className={
+              `cursor-pointer ` +
+              (JSON.parse(
+                localStorage.getItem('countryListRS') || `[]`
+              ).includes(elem.name.official)
+                ? 'brightness-50'
+                : '')
+            }
+            onClick={(event) => handleVisited(event, elem.name.official)}
+          >
             <Country elem={elem} />
           </tr>
         ))}
