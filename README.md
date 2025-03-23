@@ -4,7 +4,7 @@ Performance of my application
 
 I set Asia region and check performance then I removed this one and check perfomrmance of my application again when show all the regions
 
-# set Asia
+# set Asia region in filter
 
 ### Commit without optimisation
 
@@ -38,7 +38,7 @@ I set Asia region and check performance then I removed this one and check perfom
 
 ![alt text](image-12.png)
 
-# remove Asia (show all)
+# remove Asia region from filter (show all country)
 
 ### Commit without optimisation
 

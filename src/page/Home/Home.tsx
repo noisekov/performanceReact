@@ -106,6 +106,7 @@ const Home = () => {
       },
     ],
   });
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   useEffect(() => {
     (async function () {
@@ -117,6 +118,7 @@ const Home = () => {
   const sortHandler = useCallback(() => {
     setArrow(!arrow);
     dispatch({ type: 'sort', value: arrow ? 'desc' : 'asc' });
+    setIsFirstRender(false);
   }, [arrow]);
 
   const handleVisited = useCallback(
@@ -150,7 +152,13 @@ const Home = () => {
           <td className="border-1 border-sky-600 w-1/3 p-2">
             <span className="cursor-pointer" onClick={sortHandler}>
               Population
-              <span className={'inline-block ' + (arrow ? '' : 'rotate-180')}>
+              <span
+                className={
+                  isFirstRender
+                    ? 'opacity-50'
+                    : '' + 'inline-block' + (arrow ? '' : ' rotate-180')
+                }
+              >
                 🔼
               </span>
             </span>
