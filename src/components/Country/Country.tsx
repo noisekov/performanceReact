@@ -1,7 +1,7 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { Idata } from '../../apiData/apiData';
 
-const Country: FC<{ elem: Idata }> = ({ elem }) => {
+const Country: FC<{ elem: Idata }> = memo(({ elem }) => {
   return (
     <>
       <td className="text-left border-1 border-sky-600 p-2">
@@ -21,6 +21,7 @@ const Country: FC<{ elem: Idata }> = ({ elem }) => {
       </td>
     </>
   );
-};
+});
 
+Country.displayName = 'Country';
 export default Country;
