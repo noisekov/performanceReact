@@ -1,10 +1,10 @@
-import { FC } from 'react';
+import { FC, memo } from 'react';
 import { IAction } from '../../page/Home/Home';
 
 const Search: FC<{
   className?: string;
   dispatch: React.ActionDispatch<[action: IAction]>;
-}> = ({ dispatch, className }) => {
+}> = memo(({ dispatch, className }) => {
   function debounce<T>(func: (arg: T) => unknown, time: number) {
     let timeout: number;
 
@@ -31,6 +31,7 @@ const Search: FC<{
       />
     </div>
   );
-};
+});
 
+Search.displayName = 'Search';
 export default Search;

@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useCallback } from 'react';
+import { ChangeEvent, FC, memo, useCallback } from 'react';
 import { Idata } from '../../apiData/apiData';
 import { IAction } from '../../page/Home/Home';
 
@@ -6,7 +6,7 @@ const Dropdown: FC<{
   className?: string;
   state: Idata[];
   dispatch: React.ActionDispatch<[action: IAction]>;
-}> = ({ state, dispatch, className }) => {
+}> = memo(({ state, dispatch, className }) => {
   const [...regions] = new Set(state.map((elem) => elem.region));
 
   const handleSelectedOption = useCallback(
@@ -33,6 +33,7 @@ const Dropdown: FC<{
       </select>
     </div>
   );
-};
+});
 
+Dropdown.displayName = 'Dropdown';
 export default Dropdown;
