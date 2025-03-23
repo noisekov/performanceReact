@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import getData, { Idata } from '../../apiData/apiData';
 import Search from '../../components/Search/Search';
@@ -113,24 +113,31 @@ const Home = () => {
     })();
   }, []);
 
-  const sortHandler = () => {
+  const [arrow, setArrow] = useState(false);
+  const sortHandler = useCallback(() => {
     setArrow(!arrow);
     dispatch({ type: 'sort', value: arrow ? 'desc' : 'asc' });
-  };
-  const [arrow, setArrow] = useState(false);
+  }, [arrow]);
 
-  const handleVisited = (event: React.MouseEvent, element: string) => {
-    const target = event.target as HTMLElement;
-    target.parentElement?.classList.add('brightness-50');
-    const countryListVisited = JSON.parse(
-      localStorage.getItem('countryListRS') || `[]`
-    );
-    countryListVisited.push(element);
-    localStorage.setItem(
-      'countryListRS',
-      JSON.stringify([...new Set(countryListVisited)])
-    );
-  };
+  const handleVisited = useCallback(
+    (event: React.MouseEvent, element: string) => {
+      const target = event.target as HTMLElement;
+      target.parentElement?.classList.add('brightness-50');
+      const countryListVisited = JSON.parse(
+        localStorage.getItem('countryListRS') || `[]`
+      );
+      countryListVisited.push(element);
+      localStorage.setItem(
+        'countryListRS',
+        JSON.stringify([...new Set(countryListVisited)])
+      );
+    },
+    []
+  );
+
+  const memoizedFilteredState = useMemo(() => {
+    return state.filteredState;
+  }, [state.filteredState]);
 
   return (
     <table>
@@ -160,7 +167,7 @@ const Home = () => {
         </tr>
       </thead>
       <tbody>
-        {state?.filteredState.map((elem, index) => (
+        {memoizedFilteredState.map((elem, index) => (
           <tr
             key={index}
             className={
